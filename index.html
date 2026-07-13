@@ -338,20 +338,22 @@
 </head>
 <body>
 
+    <!-- عنصر الصوت (مخفي) -->
+    <audio id="bg-music" src="music.mp3" loop></audio>
+
     <!-- الخلفية التفاعلية للقلوب -->
     <div id="hearts-bg"></div>
 
     <!-- شاشة 1: البداية -->
     <div id="screen1" class="screen active">
         <div class="avatar-container">
-            <!-- أيقونة لطيفة جداً للترحيب -->
             <svg viewBox="0 0 24 24">
                 <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
             </svg>
         </div>
         <h1>أهلاً يا ستهم.. 🌸</h1>
         <p class="subtitle">عارفة أنتِ قدر شنو حلوة و كيوتة في عيني؟</p>
-        <button class="btn" onclick="goToScreen(2); startCutenessMeter();">افتحي قلبي 💖</button>
+        <button class="btn" onclick="startExperience()">افتحي قلبي 💖</button>
     </div>
 
     <!-- شاشة 2: عداد اللطافة -->
@@ -375,7 +377,7 @@
         <div class="cards-list">
             <div class="reveal-card" onclick="revealCard(this)">
                 <span class="card-heart">❤️</span>
-                <span class="card-text">ضحكتكِ بتنوّر يومي كلو حرفياً 😊</span>
+                <span class="card-text">ضحكتكِ بتنوّر يومي كله حرفياً 😊</span>
             </div>
             <div class="reveal-card" onclick="revealCard(this)">
                 <span class="card-heart">❤️</span>
@@ -414,7 +416,7 @@
         <div class="glowing-heart">💖</div>
         <h1>هتفضلي دايماً مميزة..</h1>
         <p class="subtitle" style="font-size: 1.3rem; color: #ff8fab; font-weight: bold;">
-            أنا لسه بحبك وعمري ما هبطل أحبك. ✨
+            أنا لسه بحبك وعمري ما حبطل أحبك. ✨
         </p>
         <p style="color: #aaa; font-size: 0.95rem; margin-top: 20px;">
            تحت شعار لو ما برمجنا لي ستهم ماف داعي نبرمج. 🌹
@@ -422,6 +424,19 @@
     </div>
 
     <script>
+        // تشغيل الموسيقى والانتقال للشاشة التانية عند الضغط
+        function startExperience() {
+            const music = document.getElementById('bg-music');
+            
+            // تشغيل الصوت بأمان بعد تفاعل المستخدم
+            music.play().catch(error => {
+                console.log("لم يتم تشغيل الصوت تلقائياً بسبب سياسة المتصفح:", error);
+            });
+
+            goToScreen(2);
+            startCutenessMeter();
+        }
+
         // تغيير الشاشات بتأثير ناعم
         function goToScreen(screenNumber) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -446,7 +461,7 @@
                     warningMsg.classList.add('show');
                     nextBtn.style.display = 'block';
                 }
-            }, 30); // سرعة العداد
+            }, 30);
         }
 
         // كشف البطاقات
@@ -479,7 +494,7 @@
             heart.innerHTML = '❤️';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.fontSize = Math.random() * 20 + 10 + 'px';
-            heart.style.animationDuration = Math.random() * 3 + 4 + 's'; // من 4 لـ 7 ثواني
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
             document.getElementById('hearts-bg').appendChild(heart);
 
             setTimeout(() => {
