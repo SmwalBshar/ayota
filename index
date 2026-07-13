@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكانكِ الخاص في قلبي ❤️</title>
+    <!-- خطوط جوجل بشكل عصري -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff4b6e;
+            --primary-hover: #ff0a54;
+            --bg-gradient: linear-gradient(180deg, #0f0c1b, #201335, #0f0c1b);
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 75, 110, 0.2);
+            --text-color: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* حاوية الصفحات */
+        .screen {
+            display: none;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* الصفحة النشطة فقط هي اللي بتظهر */
+        .screen.active {
+            display: block;
+        }
+
+        /* أزرار عصرية */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(255, 75, 110, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 10, 84, 0.6);
+        }
+
+        /* --- شاشة 1: الترحيب --- */
+        .avatar-container {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px rgba(255, 75, 110, 0.3);
+        }
+
+        .avatar-container svg {
+            width: 80px;
+            height: 80px;
+            fill: #ff8fab;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff8fab, #ff4b6e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 25px;
+        }
+
+        /* --- شاشة 2: مقياس اللطافة --- */
+        .progress-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background: #201730;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 75, 110, 0.3);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff8fab, #ff4b6e);
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+
+        .percentage {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .warning-tag {
+            background: rgba(255, 10, 84, 0.15);
+            border: 1px solid var(--primary);
+            color: #ff8fab;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 15px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .warning-tag.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- شاشة 3: البطاقات التفاعلية --- */
+        .cards-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .reveal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 15px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reveal-card:hover {
+            background: rgba(255, 75, 110, 0.15);
+            border-color: var(--primary);
+        }
+
+        .reveal-card .card-heart {
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .reveal-card.revealed .card-heart {
+            display: none;
+        }
+
+        .reveal-card .card-text {
+            display: none;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #fff;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .reveal-card.revealed {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ff8fab;
+            cursor: default;
+        }
+
+        .reveal-card.revealed .card-text {
+            display: block;
+        }
+
+        /* --- شاشة 4: الجواب التفاعلي --- */
+        .envelope-wrapper {
+            margin: 30px auto;
+            position: relative;
+            width: 180px;
+            height: 110px;
+            background: #ff4b6e;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 90px solid transparent;
+            border-right: 90px solid transparent;
+            border-top: 60px solid #ff7096;
+            transform-origin: top;
+            transition: transform 0.4s ease-in-out;
+            z-index: 3;
+        }
+
+        .envelope-wrapper.open::before {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .letter {
+            position: absolute;
+            bottom: 5px;
+            left: 10px;
+            right: 10px;
+            height: 90px;
+            background: #fff;
+            border-radius: 5px;
+            z-index: 2;
+            transition: all 0.5s ease;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .envelope-wrapper.open .letter {
+            transform: translateY(-80px);
+            height: 220px;
+            z-index: 4;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+            width: 200px;
+            left: -10px;
+        }
+
+        .letter-content {
+            color: #333;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: right;
+        }
+
+        .envelope-wrapper.open .letter-content {
+            opacity: 1;
+            transition-delay: 0.3s;
+        }
+
+        /* --- شاشة 5: شاشة النهاية اللطيفة --- */
+        .glowing-heart {
+            font-size: 5rem;
+            color: var(--primary);
+            animation: beat 1s infinite alternate;
+            margin-bottom: 20px;
+        }
+
+        /* تأثير الخلفية بالقلوب الطائرة */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 75, 110, 0.2);
+            pointer-events: none;
+            animation: floatUp 6s linear infinite;
+            z-index: 0;
+        }
+
+        /* الحركات */
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes beat {
+            to { transform: scale(1.15); text-shadow: 0 0 20px var(--primary); }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الخلفية التفاعلية للقلوب -->
+    <div id="hearts-bg"></div>
+
+    <!-- شاشة 1: البداية -->
+    <div id="screen1" class="screen active">
+        <div class="avatar-container">
+            <!-- أيقونة لطيفة جداً للترحيب -->
+            <svg viewBox="0 0 24 24">
+                <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+            </svg>
+        </div>
+        <h1>أهلاً يا ستهم.. 🌸</h1>
+        <p class="subtitle">عارفة أنتِ قدر شنو حلوة و كيوتة في عيني؟</p>
+        <button class="btn" onclick="goToScreen(2); startCutenessMeter();">افتحي قلبي 💖</button>
+    </div>
+
+    <!-- شاشة 2: عداد اللطافة -->
+    <div id="screen2" class="screen">
+        <h1>جاري حساب مدى حلاوتك..</h1>
+        <p class="subtitle" style="margin-bottom: 15px;">استعدي للنتيجة الصادمة</p>
+        <div class="progress-box">
+            <div class="percentage" id="percent-text">0%</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-fill"></div>
+            </div>
+            <div class="warning-tag" id="warning-msg">⚠️ تحذير: كمية الحلاوة ماا طبيعية و الكون ما بقدر يتحملها!</div>
+        </div>
+        <button class="btn" id="btn-to-screen3" style="display: none;" onclick="goToScreen(3)">تعالي شوفي البعدو  😉 ➡️</button>
+    </div>
+
+    <!-- شاشة 3: البطاقات التفاعلية لكشف الأسباب -->
+    <div id="screen3" class="screen">
+        <h1>تفاصيل بسيطة فيكي.. 💕</h1>
+        <p class="subtitle">اضغطي على كل قلب عشان تشوفي الجواهو:</p>
+        <div class="cards-list">
+            <div class="reveal-card" onclick="revealCard(this)">
+                <span class="card-heart">❤️</span>
+                <span class="card-text">ضحكتكِ بتنوّر يومي كلو حرفياً 😊</span>
+            </div>
+            <div class="reveal-card" onclick="revealCard(this)">
+                <span class="card-heart">❤️</span>
+                <span class="card-text">طريقتكِ في الكلام وطيبتكِ بتخليني دايماً مبسوط 🌸</span>
+            </div>
+            <div class="reveal-card" onclick="revealCard(this)">
+                <span class="card-heart">❤️</span>
+                <span class="card-text">تفاصيلكِ الصغيرة هي أحلى حاجة في حياتي ✨</span>
+            </div>
+            <div class="reveal-card" onclick="revealCard(this)">
+                <span class="card-heart">❤️</span>
+                <span class="card-text">وجودكِ في دنيتي بيخلي أي حاجة صعبة سهلة 🫂</span>
+            </div>
+        </div>
+        <button class="btn" id="btn-to-screen4" style="display: none;" onclick="goToScreen(4)">لسه في حاجة كمان.. 👉</button>
+    </div>
+
+    <!-- شاشة 4: الجواب التفاعلي -->
+    <div id="screen4" class="screen">
+        <h1>رسالة صغيرة من قلبي.. 💌</h1>
+        <p class="subtitle">اضغطي على الجواب عشان يفتح ليكي:</p>
+        
+        <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
+            <div class="letter">
+                <div class="letter-content">
+                    عايز أقولكِ إني لسه بحبك، و ماف يوم بعدى عليا من غير ما أفكر فيكي.. أنتِ لسه الشخص الأهم والأقرب لروحي وقلبي ومستحيل أتخلى عنك. ❤️
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" id="btn-to-screen5" style="display: none; margin-top: 100px;" onclick="goToScreen(5)">أهم كلمة.. 🥹</button>
+    </div>
+
+    <!-- شاشة 5: شاشة النهاية الرومانسية -->
+    <div id="screen5" class="screen">
+        <div class="glowing-heart">💖</div>
+        <h1>هتفضلي دايماً مميزة..</h1>
+        <p class="subtitle" style="font-size: 1.3rem; color: #ff8fab; font-weight: bold;">
+            أنا لسه بحبك وعمري ما هبطل أحبك. ✨
+        </p>
+        <p style="color: #aaa; font-size: 0.95rem; margin-top: 20px;">
+           تحت شعار لو ما برمجنا لي ستهم ماف داعي نبرمج. 🌹
+        </p>
+    </div>
+
+    <script>
+        // تغيير الشاشات بتأثير ناعم
+        function goToScreen(screenNumber) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen${screenNumber}`).classList.add('active');
+        }
+
+        // تشغيل عداد اللطافة
+        function startCutenessMeter() {
+            let percent = 0;
+            const percentText = document.getElementById('percent-text');
+            const progressFill = document.getElementById('progress-fill');
+            const warningMsg = document.getElementById('warning-msg');
+            const nextBtn = document.getElementById('btn-to-screen3');
+
+            const interval = setInterval(() => {
+                percent++;
+                percentText.innerText = percent + '%';
+                progressFill.style.width = Math.min(percent, 100) + '%';
+
+                if (percent >= 120) {
+                    clearInterval(interval);
+                    warningMsg.classList.add('show');
+                    nextBtn.style.display = 'block';
+                }
+            }, 30); // سرعة العداد
+        }
+
+        // كشف البطاقات
+        let revealedCount = 0;
+        function revealCard(card) {
+            if (!card.classList.contains('revealed')) {
+                card.classList.add('revealed');
+                revealedCount++;
+                if (revealedCount === 4) {
+                    document.getElementById('btn-to-screen4').style.display = 'block';
+                }
+            }
+        }
+
+        // فتح الجواب
+        function openEnvelope() {
+            const env = document.getElementById('envelope');
+            if (!env.classList.contains('open')) {
+                env.classList.add('open');
+                setTimeout(() => {
+                    document.getElementById('btn-to-screen5').style.display = 'block';
+                }, 800);
+            }
+        }
+
+        // إنشاء قلوب عشوائية في الخلفية بشكل متواصل
+        function createBgHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('bg-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's'; // من 4 لـ 7 ثواني
+            document.getElementById('hearts-bg').appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }
+
+        setInterval(createBgHeart, 400);
+    </script>
+</body>
+</html>
