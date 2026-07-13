@@ -456,7 +456,7 @@
                 percentText.innerText = percent + '%';
                 progressFill.style.width = Math.min(percent, 100) + '%';
 
-                if (percent >= 120) {
+                if (percent >= 200) {
                     clearInterval(interval);
                     warningMsg.classList.add('show');
                     nextBtn.style.display = 'block';
